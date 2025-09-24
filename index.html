@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>AI4Agri - Smart Crop Advisory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Leaflet CSS for interactive maps -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+</head>
+<body>
+  <main class="screen">
+    <!-- Background watermark leaves -->
+    <div class="bg-watermark" aria-hidden="true"></div>
+
+    <!-- Landing Screen -->
+    <section id="screen-landing" class="hero" role="region" aria-label="AI4Agri intro">
+      <div class="logo-wrap" aria-label="App logo">
+        <div class="logo-ring">
+          <!-- If image.png exists, it will show. Otherwise the ring placeholder still looks good. -->
+          <img src="image.png" alt="AI4Agri logo" class="logo" onerror="this.classList.add('hide')" />
+        </div>
+      </div>
+
+      <h1 class="brand">
+        <span class="brand-text">AI4Agri</span>
+        <span class="brand-leaf" aria-hidden="true">
+          <!-- Leaf icon -->
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20.5 3.5C14 4 8.5 6.5 6 12.5c-1.5 3.5-.5 6 2 7 3 1.2 6-.3 7.5-4 .8-1.9 1.3-4 4-6 .6-.5.9-1.2.8-2-.1-.8-.8-1.5-1.6-1.5h-.2z" fill="#67B457"/>
+            <path d="M9 17c2-2 5-4 9-5" stroke="#3B6B2A" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+      </h1>
+
+      <p class="subtitle" data-i18n="subtitle">
+        Your personal guide to smarter farming. Get real-time crop advice, weather updates, and market insights to maximize your yield.
+      </p>
+
+      <div class="cta">
+        <button id="get-started" class="btn-primary" aria-label="Get started">
+          <span class="btn-text" data-i18n="get_started">Get started</span>
+          <span class="chevron" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 6l6 6-6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Connect With Us Screen -->
+    <section id="screen-connect" class="connect-screen hidden" role="region" aria-label="Connect With Us">
+      <header class="topbar">
+        <button id="btn-connect-back" class="icon-back" aria-label="Go back">
+          <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="11.5" fill="none" stroke="#111" stroke-width="2.5"/>
+            <path d="M15.5 9l-4.5 5 4.5 5" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h2 class="topbar-title" data-i18n="connect_with_us">Connect With Us</h2>
+        <button class="p-icon" aria-label="Help">❓</button>
+      </header>
+      <div class="connect-content">
+        <h2 class="connect-title" data-i18n="connect_with_us">Connect With Us</h2>
+        <p class="connect-sub">Follow us on social media or send us a message. We'd love to hear from you!</p>
+        <div class="social-row">
+          <button class="social">f</button>
+          <button class="social">𝕏</button>
+          <button class="social">📸</button>
+          <button class="social">in</button>
+          <button class="social">▶️</button>
+          <button class="social">🟢</button>
+        </div>
+        <h3 class="connect-subtitle">Send us a Message</h3>
+        <div class="connect-form">
+          <input id="cn-name" class="mkt-input" placeholder="Your Name" />
+          <input id="cn-email" class="mkt-input" placeholder="Your Email" />
+          <textarea id="cn-msg" class="txt" placeholder="Your  Message"></textarea>
+          <button id="btn-cn-send" class="btn-primary">Send us a Message</button>
+        </div>
+      </div>
+      <nav class="tabbar"><button class="tab active"><span class="t-icon">⚙️</span><span class="t-label">Settings</span></button></nav>
+    </section>
+
+    <!-- Your Feedback Screen -->
+    <section id="screen-feedback" class="feedback-screen hidden" role="region" aria-label="Your Feedback">
+      <header class="topbar">
+        <button id="btn-feedback-back" class="icon-back" aria-label="Go back">
+          <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="11.5" fill="none" stroke="#111" stroke-width="2.5"/>
+            <path d="M15.5 9l-4.5 5 4.5 5" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h2 class="topbar-title" data-i18n="your_feedback">Your Feedback</h2>
+        <button class="p-icon" aria-label="Help">❓</button>
+      </header>
+      <div class="feedback-content">
+        <h2 class="fb-title">Your Feedback</h2>
+        <p class="fb-sub">How satisfied are you with our service?</p>
+        <div class="emoji-row">
+          <button class="emo">😠<span>Very Poor</span></button>
+          <button class="emo">☹️<span>Poor</span></button>
+          <button class="emo">😐<span>Okay</span></button>
+          <button class="emo">🙂<span>Good</span></button>
+          <button class="emo">😃<span>Excellent</span></button>
+        </div>
+        <h3 class="fb-subtitle">What areas need improvement?</h3>
+        <div class="chip-grid">
+          <button class="chip-btn">Overall Service</button>
+          <button class="chip-btn ghost">Transparency</button>
+          <button class="chip-btn ghost">Support</button>
+          <button class="chip-btn ghost">Accuracy</button>
+          <button class="chip-btn ghost">App Features</button>
+          <button class="chip-btn ghost">Response Time</button>
+        </div>
+        <h3 class="fb-subtitle">Additional Comments</h3>
+        <textarea id="fb-msg" class="txt" placeholder="Share Your Thoughts With Us..."></textarea>
+        <button id="btn-fb-submit" class="btn-primary">Submit Feedback</button>
+      </div>
+      <nav class="tabbar"><button class="tab active"><span class="t-icon">⚙️</span><span class="t-label">Settings</span></button></nav>
+    </section>
+
+    <!-- Settings Screen -->
+    <section id="screen-settings" class="settings-screen hidden" role="region" aria-label="Settings">
+      <header class="topbar">
+        <button id="btn-set-back" class="icon-back" aria-label="Go back">
+          <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="11.5" fill="none" stroke="#111" stroke-width="2.5"/>
+            <path d="M15.5 9l-4.5 5 4.5 5" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h2 class="topbar-title" data-i18n="settings">Settings</h2>
+        <button class="p-icon" aria-label="Help">❓</button>
+      </header>
+
+      <div class="settings-content">
+        <div class="set-search-row">
+          <input id="set-search" class="search" placeholder="Search Settings..." />
+        </div>
+
+        <h3 class="set-section">Account Settings</h3>
+        <div class="set-card">
+          <button class="set-item">👤 <span>Personal Information</span> <span class="chev">›</span></button>
+          <button class="set-item">🛡️ <span>Security</span> <span class="chev">›</span></button>
+          <button class="set-item">🧑‍🤝‍🧑 <span>Permissions</span> <span class="chev">›</span></button>
+        </div>
+
+        <h3 class="set-section">Notifications</h3>
+        <div class="set-card">
+          <label class="set-item toggle"><span>📧 E-mail Notifications</span><input type="checkbox" id="tg-email" /><i></i></label>
+          <label class="set-item toggle"><span>🔔 Push Notifications</span><input type="checkbox" id="tg-push" /><i></i></label>
+          <label class="set-item toggle"><span>🌦️ Weather alerts</span><input type="checkbox" id="tg-weather" /><i></i></label>
+        </div>
+
+        <h3 class="set-section">Privacy & Security</h3>
+        <div class="set-card">
+          <button class="set-item">🔒 <span>Privacy Settings</span> <span class="chev">›</span></button>
+          <label class="set-item toggle"><span>🛡️ Two-Factor Authentication</span><input type="checkbox" id="tg-2fa" /><i></i></label>
+        </div>
+
+        <h3 class="set-section">App Settings</h3>
+        <div class="set-card">
+          <div class="set-item slider">
+            <span>💾 Storage Usage</span>
+            <div class="storage">
+              <input id="set-storage" type="range" min="0" max="100" value="75" />
+              <span id="set-storage-label">75% used</span>
+            </div>
+          </div>
+          <label class="set-item toggle"><span>🔁 Auto-Sync</span><input type="checkbox" id="tg-sync" checked /><i></i></label>
+        </div>
+
+        <h3 class="set-section">Help & Support</h3>
+        <div class="set-card">
+          <button id="btn-connect" class="set-item">📄 <span>Connect With Us</span> <span class="chev">›</span></button>
+          <button id="btn-feedback" class="set-item">📬 <span>Your Feedback</span> <span class="chev">›</span></button>
+          <button class="set-item">📜 <span>Terms & Privacy</span> <span class="chev">›</span></button>
+        </div>
+
+        <button id="btn-logout" class="logout-btn">⬅️ Log Out</button>
+      </div>
+
+      <nav class="tabbar" aria-label="Bottom navigation">
+        <button class="tab" data-tab="home"><span class="t-icon">🏠</span><span class="t-label">Home</span></button>
+        <button class="tab" data-tab="advisory"><span class="t-icon">📢</span><span class="t-label">Advisory</span></button>
+        <button class="tab" data-tab="detection"><span class="t-icon">🔎</span><span class="t-label">Detection</span></button>
+        <button class="tab" data-tab="market"><span class="t-icon">📈</span><span class="t-label">Market</span></button>
+        <button class="tab active" data-tab="settings"><span class="t-icon">⚙️</span><span class="t-label">Settings</span></button>
+      </nav>
+    </section>
+
+    <!-- AI Assistant Screen -->
+    <section id="screen-assistant" class="assistant-screen hidden" role="region" aria-label="AI Assistant">
+      <header class="topbar">
+        <button id="btn-assist-back" class="icon-back" aria-label="Go back">
+          <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="11.5" fill="none" stroke="#111" stroke-width="2.5"/>
+            <path d="M15.5 9l-4.5 5 4.5 5" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h2 class="topbar-title">AI4Agri AI Assistant</h2>
+        <button class="p-icon" aria-label="Help">❓</button>
+      </header>
+
+      <div class="assist-content">
+        <h2 class="assist-heading">AI4Agri AI Assistant</h2>
+        <p class="assist-sub">Your smart farming companion</p>
+
+        <section class="chat-card">
+          <div class="chat-row">
+            <div class="bot-ic">🤖</div>
+            <div class="bubble">
+              Hello! I'm your AI4Agri AI Assistant. I can help you with:
+              <ul>
+                <li>Crop recommendations</li>
+                <li>Pest control advice</li>
+                <li>Weather-based farming tips</li>
+                <li>Market prices and trends</li>
+              </ul>
+              How can I assist you today?
+            </div>
+          </div>
+          <div class="chat-row warn">
+            <div class="bot-ic">🤖</div>
+            <div class="bubble">Warning: Unable to connect to the AI service. Some features may be limited.</div>
+          </div>
+
+          <div class="input-row">
+            <input id="assist-input" class="assist-input" placeholder="Type your question here..." />
+            <button class="assist-btn" id="assist-photo" aria-label="Attach photo">📷</button>
+            <button class="assist-btn" id="assist-mic" aria-label="Voice">🎙️</button>
+            <button class="assist-btn" id="assist-share" aria-label="Share chat">📤</button>
+            <button class="assist-btn" id="assist-send" aria-label="Send">🛰️</button>
+            <input id="assist-file" type="file" accept="image/*" hidden />
+          </div>
+        </section>
+
+        <section class="assist-faq">
+          <h3 class="assist-faq-title">Common Questions</h3>
+          <div class="faq-grid">
+            <button class="faq-btn">Seasonal Crops</button>
+            <button class="faq-btn">Plant Diseases</button>
+            <button class="faq-btn">Market Prices</button>
+            <button class="faq-btn">Soil Health</button>
+          </div>
+        </section>
+      </div>
+
+      <nav class="tabbar" aria-label="Bottom navigation">
+        <button class="tab" data-tab="home"><span class="t-icon">🏠</span><span class="t-label">Home</span></button>
+        <button class="tab" data-tab="advisory"><span class="t-icon">📢</span><span class="t-label">Advisory</span></button>
+        <button class="tab active" data-tab="detection"><span class="t-icon">🔎</span><span class="t-label">Detection</span></button>
+        <button class="tab" data-tab="market"><span class="t-icon">📈</span><span class="t-label">Market</span></button>
+        <button class="tab" data-tab="settings"><span class="t-icon">⚙️</span><span class="t-label">Settings</span></button>
+      </nav>
+    </section>
+
+    <!-- Market Price Tracking Screen -->
+    <section id="screen-market-detail" class="market-detail-screen hidden" role="region" aria-label="Market Price Tracking">
+      <header class="topbar">
+        <button id="btn-mktdet-back" class="icon-back" aria-label="Go back">
+          <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="11.5" fill="none" stroke="#111" stroke-width="2.5"/>
+            <path d="M15.5 9l-4.5 5 4.5 5" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h2 class="topbar-title">Market Price Tracking</h2>
+        <button class="p-icon" aria-label="Help">❓</button>
+      </header>
+
+      <div class="mktdet-content">
+        <section class="mktdet-card">
+          <div class="field">
+            <label>Crop Type</label>
+            <select id="md-crop" class="mkt-select">
+              <option value="">Select Crop</option>
+              <option>Tomato</option>
+              <option>Cauliflower</option>
+              <option>Mango</option>
+              <option>Potato</option>
+              <option>Onion</option>
+              <option>Rice</option>
+              <option>Maize</option>
+              <option>Brinjal</option>
+              <option>Wheat</option>
+              <option>Barley</option>
+              <option>Gram</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Land Area (in Acres)</label>
+            <input id="md-area" class="mkt-input" placeholder="Type here..." />
+          </div>
+          <div class="field">
+            <label>State</label>
+            <select id="md-state" class="mkt-select"><option value="">Select State</option></select>
+          </div>
+          <div class="field">
+            <label>District</label>
+            <select id="md-district" class="mkt-select"><option value="">Select District</option></select>
+          </div>
+          <div class="field">
+            <label>Sowing Date</label>
+            <input id="md-date" type="date" class="mkt-input" />
+          </div>
+        </section>
+
+        <section class="mktdet-card">
+          <h3 class="mktdet-title">Cost Tracking</h3>
+          <div class="cost-grid">
+            <div class="cost-box"><div class="c-ic">🌱</div><div class="c-name">Seeds</div><div class="c-val" id="c-seed">0 Rs</div></div>
+            <div class="cost-box"><div class="c-ic">🧪</div><div class="c-name">Fertilizers</div><div class="c-val" id="c-fert">0 Rs</div></div>
+            <div class="cost-box"><div class="c-ic">💧</div><div class="c-name">Irrigation</div><div class="c-val" id="c-irr">0 Rs</div></div>
+            <div class="cost-box"><div class="c-ic">🧯</div><div class="c-name">Pesticides</div><div class="c-val" id="c-pest">0 Rs</div></div>
+          </div>
+        </section>
+
+        <section class="mktdet-card">
+          <h3 class="mktdet-title">Financial Summary</h3>
+          <div class="sum-row"><div class="sum-label">Total Cost</div><div class="sum-val" id="s-total">0 Rs</div></div>
+          <div class="sum-row"><div class="sum-label">Estimated Yield</div><div class="sum-val" id="s-yield">0 quintals</div></div>
+          <div class="sum-row"><div class="sum-label">Expected Income</div><div class="sum-val" id="s-income">0 Rs</div></div>
+          <div class="sum-row"><div class="sum-label">Expected Profit/Loss</div><div class="sum-val" id="s-profit">0 Rs</div></div>
+        </section>
+
+        <section class="mktdet-card">
+          <h3 class="mktdet-title">Crop Timeline</h3>
+          <div class="timeline">
+            <div class="line"></div>
+          </div>
+        </section>
+      </div>
+
+      <nav class="tabbar" aria-label="Bottom navigation">
+        <button class="tab" data-tab="home"><span class="t-icon">🏠</span><span class="t-label">Home</span></button>
+        <button class="tab" data-tab="advisory"><span class="t-icon">📢</span><span class="t-label">Advisory</span></button>
+        <button class="tab" data-tab="detection"><span class="t-icon">🔎</span><span class="t-label">Detection</span></button>
+        <button class="tab active" data-tab="market"><span class="t-icon">📈</span><span class="t-label">Market</span></button>
+        <button class="tab" data-tab="settings"><span class="t-icon">⚙️</span><span class="t-label">Settings</span></button>
+      </nav>
+    </section>
+
+    <!-- Market Prices Screen -->
+    <section id="screen-market" class="market-screen hidden" role="region" aria-label="Market Space">
+      <header class="topbar">
+        <button id="btn-market-back" class="icon-back" aria-label="Go back">
+          <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="11.5" fill="none" stroke="#111" stroke-width="2.5"/>
+            <path d="M15.5 9l-4.5 5 4.5 5" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h2 class="topbar-title">Market Space</h2>
+        <span style="width:28px"></span>
+      </header>
+
+      <div class="market-content">
+        <div class="mkt-search-row">
+          <input id="mkt-search" class="mkt-search" placeholder="Search for a crop, e.g. tomato..." />
+          <button id="btn-mkt-search" class="chip-btn">Filter</button>
+        </div>
+        <div class="mkt-filters">
+          <select id="mkt-state" class="mkt-select">
+            <option value="">Select State</option>
+            <option>Punjab</option>
+            <option>Karnataka</option>
+            <option>Tamil Nadu</option>
+            <option>Telangana</option>
+          </select>
+          <select id="mkt-type" class="mkt-select">
+            <option value="">Market Type</option>
+            <option>Wholesale</option>
+            <option>Retail</option>
+          </select>
+        </div>
+
+        <ul id="mkt-grid" class="mkt-grid">
+          <li class="mkt-item" data-name="Tomato"><span class="mkt-img">🍅</span><span class="mkt-name">Tomato</span></li>
+          <li class="mkt-item" data-name="Cauliflower"><span class="mkt-img">🥦</span><span class="mkt-name">Cauliflower</span></li>
+          <li class="mkt-item" data-name="Mango"><span class="mkt-img">🥭</span><span class="mkt-name">Mango</span></li>
+          <li class="mkt-item" data-name="Potato"><span class="mkt-img">🥔</span><span class="mkt-name">Potato</span></li>
+          <li class="mkt-item" data-name="Onion"><span class="mkt-img">🧅</span><span class="mkt-name">Onion</span></li>
+          <li class="mkt-item" data-name="Rice"><span class="mkt-img">🌾</span><span class="mkt-name">Rice</span></li>
+          <li class="mkt-item" data-name="Maize"><span class="mkt-img">🌽</span><span class="mkt-name">Maize</span></li>
+          <li class="mkt-item" data-name="Brinjal"><span class="mkt-img">🍆</span><span class="mkt-name">Brinjal</span></li>
+          <li class="mkt-item" data-name="Jowar"><span class="mkt-img">🌿</span><span class="mkt-name">Jowar</span></li>
+          <li class="mkt-item" data-name="Groundnut"><span class="mkt-img">🥜</span><span class="mkt-name">Groundnut</span></li>
+          <li class="mkt-item" data-name="Sugarcane"><span class="mkt-img">🍬</span><span class="mkt-name">Sugarcane</span></li>
+          <li class="mkt-item" data-name="Finger Millet"><span class="mkt-img">🌱</span><span class="mkt-name">Finger Millet</span></li>
+          <li class="mkt-item" data-name="Tur"><span class="mkt-img">🫘</span><span class="mkt-name">Tur</span></li>
+          <li class="mkt-item" data-name="Urad"><span class="mkt-img">🫘</span><span class="mkt-name">Urad</span></li>
+          <li class="mkt-item" data-name="Moong"><span class="mkt-img">🫘</span><span class="mkt-name">Moong</span></li>
+          <li class="mkt-item" data-name="Soyabean"><span class="mkt-img">🫘</span><span class="mkt-name">Soyabean</span></li>
+          <li class="mkt-item" data-name="Wheat"><span class="mkt-img">🌾</span><span class="mkt-name">Wheat</span></li>
+          <li class="mkt-item" data-name="Barley"><span class="mkt-img">🌾</span><span class="mkt-name">Barley</span></li>
+          <li class="mkt-item" data-name="Gram"><span class="mkt-img">🫘</span><span class="mkt-name">Gram</span></li>
+          <li class="mkt-item" data-name="Sesame"><span class="mkt-img">🌰</span><span class="mkt-name">Sesame</span></li>
+          <li class="mkt-item" data-name="Castor Seed"><span class="mkt-img">🌰</span><span class="mkt-name">Castor Seed</span></li>
+          <li class="mkt-item" data-name="Cotton"><span class="mkt-img">🧵</span><span class="mkt-name">Cotton</span></li>
+          <li class="mkt-item" data-name="Jute"><span class="mkt-img">🧶</span><span class="mkt-name">Jute</span></li>
+          <li class="mkt-item" data-name="Mint"><span class="mkt-img">🌿</span><span class="mkt-name">Mint</span></li>
+          <li class="mkt-item" data-name="Banana"><span class="mkt-img">🍌</span><span class="mkt-name">Banana</span></li>
+          <li class="mkt-item" data-name="Guava"><span class="mkt-img">🍈</span><span class="mkt-name">Guava</span></li>
+        </ul>
+      </div>
+
+      <nav class="tabbar" aria-label="Bottom navigation">
+        <button class="tab" data-tab="home"><span class="t-icon">🏠</span><span class="t-label">Home</span></button>
+        <button class="tab" data-tab="advisory"><span class="t-icon">📢</span><span class="t-label">Advisory</span></button>
+        <button class="tab" data-tab="detection"><span class="t-icon">🔎</span><span class="t-label">Detection</span></button>
+        <button class="tab active" data-tab="market"><span class="t-icon">📈</span><span class="t-label">Market</span></button>
+        <button class="tab" data-tab="settings"><span class="t-icon">⚙️</span><span class="t-label">Settings</span></button>
+      </nav>
+    </section>
+
+    <!-- Weather Alerts Screen -->
+    <section id="screen-weather" class="weather-screen hidden" role="region" aria-label="Weather based Alerts">
+      <header class="topbar">
+        <button id="btn-weather-back" class="icon-back" aria-label="Go back">
+          <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="11.5" fill="none" stroke="#111" stroke-width="2.5"/>
+            <path d="M15.5 9l-4.5 5 4.5 5" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h2 class="topbar-title">Weather based Alerts</h2>
+        <span style="width:28px"></span>
+      </header>
+
+      <div class="weather-content">
+        <div class="search-row">
+          <input id="weather-search" class="search" placeholder="Search location" />
+          <button id="btn-weather-search" class="search-btn" aria-label="Search">🔍</button>
+        </div>
+
+        <h3 class="section-title">Current Weather</h3>
+        <section class="w-card">
+          <div class="w-row">
+            <div class="w-cloud">☁️</div>
+            <div class="w-meta">
+              <div class="w-temp" id="w-temp">31°C</div>
+              <div class="w-cond" id="w-cond">Scattered Clouds</div>
+            </div>
+          </div>
+          <div class="w-loc" id="w-loc">DoddaBallapur</div>
+          <div class="w-metrics">
+            <div class="m"><div class="m-val" id="w-hum">63%</div><div class="m-lbl">Humidity</div></div>
+            <div class="m"><div class="m-val" id="w-wind">12 km/h</div><div class="m-lbl">Wind</div></div>
+          </div>
+        </section>
+
+        <h3 class="section-title">Weather Alert</h3>
+        <ul id="w-alerts" class="w-alerts">
+          <li class="alert">Heavy rainfall expected on Saturday.</li>
+          <li class="alert">Strong winds forecasted Tuesday evening.</li>
+        </ul>
+      </div>
+
+      <nav class="tabbar" aria-label="Bottom navigation">
+        <button class="tab" data-tab="home"><span class="t-icon">🏠</span><span class="t-label">Home</span></button>
+        <button class="tab active" data-tab="advisory"><span class="t-icon">📢</span><span class="t-label">Advisory</span></button>
+        <button class="tab" data-tab="detection"><span class="t-icon">🔎</span><span class="t-label">Detection</span></button>
+        <button class="tab" data-tab="market"><span class="t-icon">📈</span><span class="t-label">Market</span></button>
+        <button class="tab" data-tab="settings"><span class="t-icon">⚙️</span><span class="t-label">Settings</span></button>
+      </nav>
+    </section>
+
+    <!-- Soil Health Recommendation Screen -->
+    <section id="screen-soil" class="soil-screen hidden" role="region" aria-label="Soil Health Recommendation">
+      <header class="topbar">
+        <button id="btn-soil-back" class="icon-back" aria-label="Go back">
+          <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="11.5" fill="none" stroke="#111" stroke-width="2.5"/>
+            <path d="M15.5 9l-4.5 5 4.5 5" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h2 class="topbar-title">Soil Health Recommendation</h2>
+        <span style="width:28px"></span>
+      </header>
+
+      <div class="soil-content">
+        <h3 class="soil-heading">Soil health analysis</h3>
+        <!-- Tabs -->
+        <div class="tabs">
+          <button id="tab-manual" class="tab-btn active">Manual input</button>
+          <button id="tab-sensor" class="tab-btn">Sensor Data</button>
+        </div>
+
+        <!-- Sensor input block -->
+        <h4 class="block-title">Sensory Data Input</h4>
+        <div class="sensor-actions">
+          <button id="btn-scan-sensor" class="chip-btn">Connect Sensor</button>
+          <button class="chip-btn ghost">Read More</button>
+        </div>
+        <div id="sensor-status" class="sensor-status">Not Connected</div>
+
+        <!-- Manual Input -->
+        <section id="soil-manual" class="manual-block">
+          <h4 class="block-title">Soil Measurements</h4>
+          <div class="slider-row"><label>pH (level)</label><span class="v" id="v-ph">7.0</span></div>
+          <input id="sl-ph" type="range" min="4" max="9" step="0.1" value="7" />
+
+          <div class="slider-row"><label>Moisture (%)</label><span class="v" id="v-moist">40%</span></div>
+          <input id="sl-moist" type="range" min="0" max="100" step="1" value="40" />
+
+          <div class="slider-row"><label>Nitrogen (N)</label><span class="v" id="v-n">40%</span></div>
+          <input id="sl-n" type="range" min="0" max="100" step="1" value="40" />
+
+          <div class="slider-row"><label>Phosphorus (P)</label><span class="v" id="v-p">35%</span></div>
+          <input id="sl-p" type="range" min="0" max="100" step="1" value="35" />
+
+          <div class="slider-row"><label>Potassium (K)</label><span class="v" id="v-k">42%</span></div>
+          <input id="sl-k" type="range" min="0" max="100" step="1" value="42" />
+
+          <div class="slider-row"><label>Organic Matter</label><span class="v" id="v-org">40%</span></div>
+          <input id="sl-org" type="range" min="0" max="100" step="1" value="40" />
+
+          <div class="slider-row"><label>Micro Nutrients</label><span class="v" id="v-micro">40%</span></div>
+          <input id="sl-micro" type="range" min="0" max="100" step="1" value="40" />
+        </section>
+
+        <!-- Analysis Result -->
+        <h4 class="block-title">Soil Analysis Result</h4>
+        <div class="metric-row">
+          <div>Overall Result</div>
+          <div id="soil-overall" class="metric-badge">Low</div>
+        </div>
+        <div class="progress"><span id="soil-progress" style="width: 30%"></span></div>
+
+        <!-- NPK Balance (placeholder radar) -->
+        <h4 class="block-title">NPK Balance</h4>
+        <div class="radar">
+          <svg viewBox="0 0 160 140" width="100%" height="140" aria-hidden="true">
+            <polygon points="80,10 150,60 120,130 40,130 10,60" fill="none" stroke="#b5d7a6" />
+            <polygon id="npk-shape" points="80,30 130,65 105,120 55,115 30,65" fill="#9fd48a" opacity="0.5" stroke="#6fb15c" />
+            <text x="78" y="8" font-size="10">N</text>
+            <text x="150" y="58" font-size="10">P</text>
+            <text x="118" y="136" font-size="10">K</text>
+            <text x="36" y="136" font-size="10">Micros</text>
+            <text x="4" y="58" font-size="10">Organic</text>
+          </svg>
+        </div>
+
+        <!-- Smart Recommendation -->
+        <h4 class="block-title">Smart Recommendation</h4>
+        <div class="rec-card">
+          <div class="rec-title">🌿 Soil Treatment</div>
+          <div class="rec-text">Apply organic soil conditioner and balance NPK based on analysis.</div>
+        </div>
+        <div class="rec-card">
+          <div class="rec-title">🌾 Top Crop Suggestion</div>
+          <div class="rec-text">Analyzing soil condition…</div>
+        </div>
+
+        <!-- Historical Data (sparkline) -->
+        <h4 class="block-title">Historical Data</h4>
+        <div class="hist-card">
+          <svg id="soil-spark" viewBox="0 0 240 100" width="100%" height="100">
+            <polyline fill="none" stroke="#4F8F2C" stroke-width="2" points="0,80 30,60 60,65 90,50 120,55 150,70 180,65 210,50 240,60" />
+          </svg>
+        </div>
+
+        <!-- Reference Guide -->
+        <h4 class="block-title">Reference Guide</h4>
+        <div class="ref">
+          <div class="ref-sec">
+            <div class="ref-title">Ideal Ranges</div>
+            <ul>
+              <li>pH: 6.0 – 7.5</li>
+              <li>Moisture: 20% – 60%</li>
+              <li>Nitrogen &gt; 20%</li>
+              <li>Phosphorus &gt; 30%</li>
+              <li>Potassium &gt; 35%</li>
+            </ul>
+          </div>
+          <div class="ref-sec">
+            <div class="ref-title">Quick Tips</div>
+            <ul>
+              <li>Test soil regularly for best results</li>
+              <li>Maintain proper drainage and pH control</li>
+              <li>Add organic matter to improve soil structure</li>
+              <li>Consider crop rotation for soil health</li>
+              <li>Monitor pH level for nutrient availability</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <nav class="tabbar" aria-label="Bottom navigation">
+        <button class="tab" data-tab="home"><span class="t-icon">🏠</span><span class="t-label">Home</span></button>
+        <button class="tab" data-tab="advisory"><span class="t-icon">📢</span><span class="t-label">Advisory</span></button>
+        <button class="tab" data-tab="detection"><span class="t-icon">🔎</span><span class="t-label">Detection</span></button>
+        <button class="tab" data-tab="market"><span class="t-icon">📈</span><span class="t-label">Market</span></button>
+        <button class="tab" data-tab="settings"><span class="t-icon">⚙️</span><span class="t-label">Settings</span></button>
+      </nav>
+    </section>
+
+    <!-- Detection Result Screen -->
+    <section id="screen-detect-result" class="detect-result-screen hidden" role="region" aria-label="Detection Result">
+      <header class="topbar">
+        <button id="btn-detres-back" class="icon-back" aria-label="Go back">
+          <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="11.5" fill="none" stroke="#111" stroke-width="2.5"/>
+            <path d="M15.5 9l-4.5 5 4.5 5" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h2 class="topbar-title">Pest/Disease Detection</h2>
+        <span style="width:28px"></span>
+      </header>
+
+      <div class="detres-content">
+        <h2 class="detres-heading">AI Detection Result</h2>
+
+        <img id="detres-image" class="detres-image" alt="Detected plant" src="" />
+
+        <div class="detres-badge">
+          <div class="badge-title">Analysis Complete</div>
+          <div id="detres-name" class="badge-name">Late blight</div>
+        </div>
+
+        <!-- Enhanced Metrics Row -->
+        <div class="metrics-row">
+          <div class="metric">
+            <span class="metric-label">AI Confidence</span>
+            <span id="detres-confidence" class="confidence high">94%</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Threat Level</span>
+            <span id="detres-severity" class="severity critical">Critical</span>
+          </div>
+        </div>
+
+        <!-- Detection Source -->
+        <div class="detection-source">
+          <span class="source-label">Detection Method:</span>
+          <span id="detection-source" class="source-name">Plant Disease CNN Model</span>
+        </div>
+
+        <h3 class="detres-subtitle">Description</h3>
+        <p id="detres-desc" class="detres-text">Late blight, caused by the oomycete Phytophthora infestans, is a devastating disease of potatoes and tomatoes. It thrives in cool, moist conditions and can wipe out entire crops if left untreated.</p>
+
+        <!-- Symptoms Section -->
+        <h3 class="detres-subtitle">Key Symptoms</h3>
+        <ul id="symptoms-list" class="symptoms-list">
+          <li><span class="symptom-icon">🔍</span>Dark water-soaked lesions on leaves</li>
+          <li><span class="symptom-icon">🔍</span>White fuzzy growth on leaf undersides</li>
+          <li><span class="symptom-icon">🔍</span>Brown to black stem lesions</li>
+          <li><span class="symptom-icon">🔍</span>Rapid plant collapse</li>
+        </ul>
+
+        <h3 class="detres-subtitle">Treatment & Control</h3>
+        <ul id="control-measures-list" class="detres-list">
+          <li>
+            <span class="dr-ic">🧪</span>
+            <div>
+              <div class="r-label">Fungicides</div>
+              <div class="r-text">Apply fungicides like mancozeb or chlorothalonil preventatively, especially during cool and wet weather.</div>
+            </div>
+          </li>
+          <li>
+            <span class="dr-ic">🍃</span>
+            <div>
+              <div class="r-label">Cultural Practices</div>
+              <div class="r-text">Ensure good air circulation by spacing plants properly. Remove and destroy infected plant debris.</div>
+            </div>
+          </li>
+          <li>
+            <span class="dr-ic">🔄</span>
+            <div>
+              <div class="r-label">Resistant Varieties</div>
+              <div class="r-text">Plant potato and tomato varieties that are resistant to late blight.</div>
+            </div>
+          </li>
+        </ul>
+
+        <!-- Alternative Predictions Container -->
+        <div id="alternatives-container" class="alternatives-section">
+          <!-- Will be populated by JavaScript -->
+        </div>
+
+        <div class="action-buttons">
+          <button id="btn-detres-scan" class="btn-analyze">Scan Another Plant</button>
+          <button id="btn-get-help" class="btn-secondary">Get Expert Help</button>
+        </div>
+      </div>
+
+      <nav class="tabbar" aria-label="Bottom navigation">
+        <button class="tab" data-tab="home"><span class="t-icon">🏠</span><span class="t-label">Home</span></button>
+        <button class="tab" data-tab="advisory"><span class="t-icon">📢</span><span class="t-label">Advisory</span></button>
+        <button class="tab active" data-tab="detection"><span class="t-icon">🔎</span><span class="t-label">Detection</span></button>
+        <button class="tab" data-tab="market"><span class="t-icon">📈</span><span class="t-label">Market</span></button>
+        <button class="tab" data-tab="settings"><span class="t-icon">⚙️</span><span class="t-label">Settings</span></button>
+      </nav>
+    </section>
+
+    <!-- Detection Screen -->
+    <section id="screen-detection" class="detect-screen hidden" role="region" aria-label="Pest/Disease Detection">
+      <header class="topbar">
+        <button id="btn-det-back" class="icon-back" aria-label="Go back">
+          <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="11.5" fill="none" stroke="#111" stroke-width="2.5"/>
+            <path d="M15.5 9l-4.5 5 4.5 5" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h2 class="topbar-title" data-i18n="pest_disease_detection">Pest/Disease Detection</h2>
+        <span class="status-dot" aria-hidden="true"></span>
+      </header>
+
+      <div class="detect-content">
+        <h2 class="detect-heading" data-i18n="ai_powered_detection">AI-Powered Disease Detection</h2>
+        <p class="detect-sub" data-i18n="upload_crop_image">Upload a photo of your crop and our advanced AI models will analyze it for accurate pest and disease identification.</p>
+
+        <!-- AI Models Info -->
+        <div class="ai-models-info">
+          <div class="model-badge">
+            <span class="model-icon">🧠</span>
+            <span class="model-text">CNN Deep Learning</span>
+          </div>
+          <div class="model-badge">
+            <span class="model-icon">👁️</span>
+            <span class="model-text">Computer Vision</span>
+          </div>
+          <div class="model-badge">
+            <span class="model-icon">🔬</span>
+            <span class="model-text">Image Analysis</span>
+          </div>
+        </div>
+
+        <div id="det-drop" class="dropzone" tabindex="0" role="button" aria-label="Tap to upload image">
+          <input id="det-upload" type="file" accept="image/*" hidden />
+          <div class="dz-in">
+            <div class="dz-icon">📸⬆️</div>
+            <div class="dz-text" data-i18n="tap_to_upload">Tap to upload crop image</div>
+            <div class="dz-note">Supports JPG, PNG • Max 10 MB</div>
+          </div>
+          <img id="det-preview" alt="Preview" class="dz-preview hidden" />
+        </div>
+
+        <button id="btn-det-analyze" class="btn-analyze" data-i18n="analyze_with_ai">🔍 Analyze with AI</button>
+
+        <section class="tips">
+          <h3 class="tips-title">📋 Best Results Tips</h3>
+          <ul class="tips-list">
+            <li>📷 Take clear, well-lit photos of affected plant parts</li>
+            <li>🔍 Include both healthy and affected areas for comparison</li>
+            <li>☀️ Use natural daylight when possible</li>
+            <li>📐 Hold camera 6-12 inches from the plant</li>
+          </ul>
+        </section>
+      </div>
+
+      <nav class="tabbar" aria-label="Bottom navigation">
+        <button class="tab" data-tab="home"><span class="t-icon">🏠</span><span class="t-label">Home</span></button>
+        <button class="tab" data-tab="advisory"><span class="t-icon">📢</span><span class="t-label">Advisory</span></button>
+        <button class="tab active" data-tab="detection"><span class="t-icon">🔎</span><span class="t-label">Detection</span></button>
+        <button class="tab" data-tab="market"><span class="t-icon">📈</span><span class="t-label">Market</span></button>
+        <button class="tab" data-tab="settings"><span class="t-icon">⚙️</span><span class="t-label">Settings</span></button>
+      </nav>
+    </section>
+
+    <!-- Crop Advisory Screen -->
+    <section id="screen-advisory" class="advisory-screen hidden" role="region" aria-label="Crop Advisory">
+      <header class="topbar">
+        <button id="btn-adv-back" class="icon-back" aria-label="Go back">
+          <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="11.5" fill="none" stroke="#111" stroke-width="2.5"/>
+            <path d="M15.5 9l-4.5 5 4.5 5" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h2 class="topbar-title">Crop Advisory</h2>
+        <span style="width:28px"></span>
+      </header>
+
+      <div class="adv-content">
+        <section class="adv-block">
+          <h3 class="adv-heading">Location & Weather</h3>
+          <label class="adv-label" for="adv-state">State</label>
+          <div class="select-wrap">
+            <select id="adv-state" class="select">
+              <option value="" selected>Select State</option>
+              <option value="Punjab">Punjab</option>
+              <option value="Karnataka">Karnataka</option>
+              <option value="Tamil Nadu">Tamil Nadu</option>
+              <option value="Telangana">Telangana</option>
+            </select>
+          </div>
+
+          <label class="adv-label" for="adv-district">District</label>
+          <div class="select-wrap">
+            <select id="adv-district" class="select">
+              <option value="" selected>Select District</option>
+            </select>
+          </div>
+
+          <div class="adv-actions-row">
+            <button id="btn-adv-details" class="btn-outline">Get Details</button>
+          </div>
+        </section>
+
+        <section class="adv-block">
+          <h3 class="adv-heading">Crop information</h3>
+
+          <label class="adv-label" for="adv-crop">Select Crop</label>
+          <div class="select-wrap">
+            <select id="adv-crop" class="select">
+              <option value="" selected>Choose a crop</option>
+              <option>Wheat</option>
+              <option>Rice</option>
+              <option>Maize</option>
+              <option>Cotton</option>
+            </select>
+          </div>
+
+          <label class="adv-label" for="adv-soil">Soil Type</label>
+          <div class="select-wrap">
+            <select id="adv-soil" class="select">
+              <option value="" selected>Select Soil Type</option>
+              <option>Alluvial</option>
+              <option>Black</option>
+              <option>Red</option>
+              <option>Laterite</option>
+            </select>
+          </div>
+
+          <label class="adv-label" for="adv-field">Field Size (acres)</label>
+          <div class="select-wrap">
+            <input id="adv-field" class="input" type="number" placeholder="Enter field size" />
+          </div>
+
+          <p class="adv-location" id="adv-location">Location: —</p>
+
+          <div class="adv-actions-row">
+            <button id="btn-adv-reco" class="btn-pill">Get Recommendations</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Results -->
+      <div id="adv-results" class="adv-results hidden">
+        <section class="result-card">
+          <div class="result-header">
+            <span class="result-title">Recommendation for <span id="adv-res-crop">–</span></span>
+            <span class="chip chip-profit">High profit</span>
+          </div>
+          <ul class="result-list">
+            <li>
+              <span class="r-icon">🗓️</span>
+              <div>
+                <div class="r-label">Planting Time</div>
+                <div class="r-text" id="adv-res-planting">15 June to 15 July</div>
+              </div>
+            </li>
+            <li>
+              <span class="r-icon">🌾</span>
+              <div>
+                <div class="r-label">Seed Rate</div>
+                <div class="r-text" id="adv-res-seed">25–30 kg/ha</div>
+              </div>
+            </li>
+            <li>
+              <span class="r-icon">💧</span>
+              <div>
+                <div class="r-label">Irrigation</div>
+                <div class="r-text" id="adv-res-irrigation">Water requirement: 450–700 mm. Irrigate at critical stages.</div>
+              </div>
+            </li>
+            <li>
+              <span class="r-icon">📈</span>
+              <div>
+                <div class="r-label">Expected Yield</div>
+                <div class="r-text" id="adv-res-yield">45–55 quintals per hectare</div>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <h3 class="section-title">Fertilizer Schedule</h3>
+        <ul class="fert-list">
+          <li class="fert-item">
+            <div class="fert-name">Urea</div>
+            <span class="chip">120 kg/ha</span>
+            <div class="fert-note">Base dose + 2 splits</div>
+          </li>
+          <li class="fert-item">
+            <div class="fert-name">DAP</div>
+            <span class="chip">60 kg/ha</span>
+            <div class="fert-note">At sowing</div>
+          </li>
+          <li class="fert-item">
+            <div class="fert-name">Potash</div>
+            <span class="chip">40 kg/ha</span>
+            <div class="fert-note">At sowing</div>
+          </li>
+        </ul>
+      </div>
+
+      <nav class="tabbar" aria-label="Bottom navigation">
+        <button class="tab" data-tab="home"><span class="t-icon">🏠</span><span class="t-label">Home</span></button>
+        <button class="tab active" data-tab="advisory"><span class="t-icon">📢</span><span class="t-label">Advisory</span></button>
+        <button class="tab" data-tab="detection"><span class="t-icon">🔎</span><span class="t-label">Detection</span></button>
+        <button class="tab" data-tab="market"><span class="t-icon">📈</span><span class="t-label">Market</span></button>
+        <button class="tab" data-tab="settings"><span class="t-icon">⚙️</span><span class="t-label">Settings</span></button>
+      </nav>
+    </section>
+    <!-- Profile Edit Screen -->
+    <section id="screen-profile-edit" class="profile-edit-screen hidden" role="region" aria-label="Profile Setup">
+      <header class="profile-top">
+        <button id="btn-profe-back" class="p-icon" aria-label="Back">◀</button>
+        <h2 class="p-title">Profile Setup</h2>
+        <button class="p-icon" aria-label="Help">❓</button>
+      </header>
+
+      <div class="edit-content">
+        <h3 class="edit-heading">Edit Profile</h3>
+
+        <section class="p-card p-card-form">
+          <h3 class="p-card-title">Personal Information</h3>
+          <div class="field"><input type="text" id="pf-name" placeholder="Full Name" /></div>
+          <div class="field"><input type="email" id="pf-email" placeholder="Email" /></div>
+          <div class="field"><input type="tel" id="pf-phone" placeholder="Phone Number" /></div>
+        </section>
+
+        <section class="p-card p-card-form">
+          <h3 class="p-card-title">Farm Information</h3>
+          <div class="field"><input type="text" id="pf-address" placeholder="Farm Address" /></div>
+          <div class="field"><input type="number" id="pf-acres" placeholder="Acres Owned" /></div>
+          <div class="field"><input type="number" id="pf-acres-cult" placeholder="Acres Cultivating" /></div>
+        </section>
+
+        <section class="p-card p-card-form">
+          <h3 class="p-card-title">Farming Details</h3>
+          <div class="field"><input type="text" id="pf-crops" placeholder="Main Crops" /></div>
+          <div class="field"><input type="number" id="pf-exp" placeholder="Farming Experience (Years)" /></div>
+        </section>
+
+        <div class="edit-actions">
+          <button id="btn-pf-save" class="btn-outline strong">Save</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Profile Screen -->
+    <section id="screen-profile" class="profile-screen hidden" role="region" aria-label="Profile">
+      <header class="profile-top">
+        <button id="btn-prof-back" class="p-icon" aria-label="Back">◀</button>
+        <h2 class="p-title">Profile</h2>
+        <button class="p-icon" aria-label="Help">❓</button>
+      </header>
+
+      <div class="p-hero">
+        <div class="p-curve" aria-hidden="true"></div>
+        <img class="p-avatar" src="avatar.png" alt="Profile photo" onerror="this.style.display='none'" />
+        <div class="p-name">Anand Alle</div>
+        <div class="p-role">Farmer</div>
+      </div>
+
+      <div class="p-sections">
+        <section class="p-card">
+          <h3 class="p-card-title">Personal Information</h3>
+          <div class="p-row"><span>Full Name</span><strong>Gurpreet Singh</strong></div>
+          <div class="p-row"><span>Email</span><strong>gsingh@gmail.com</strong></div>
+          <div class="p-row"><span>Phone Number</span><strong>+1 234 567 8901</strong></div>
+        </section>
+
+        <section class="p-card">
+          <h3 class="p-card-title">Farm Information</h3>
+          <div class="p-row"><span>Farm Address</span><strong>Doddaballapur</strong></div>
+          <div class="p-row"><span>Acres Owned</span><strong>10</strong></div>
+          <div class="p-row"><span>Acres Cultivating</span><strong>5</strong></div>
+        </section>
+
+        <section class="p-card">
+          <h3 class="p-card-title">Farming Details</h3>
+          <div class="p-row"><span>Main Crops</span><strong>Rice</strong></div>
+          <div class="p-row"><span>Farming Experience (Years)</span><strong>10</strong></div>
+        </section>
+      </div>
+
+      <div class="p-actions">
+        <button class="p-edit">Edit Profile</button>
+      </div>
+    </section>
+    <!-- Location Selection Screen -->
+    <section id="screen-location" class="location-screen hidden" role="region" aria-label="Location selection">
+      <header class="topbar">
+        <button id="btn-loc-back" class="icon-back" aria-label="Go back">
+          <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="11.5" fill="none" stroke="#111" stroke-width="2.5"/>
+            <path d="M15.5 9l-4.5 5 4.5 5" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="topbar-brand">
+          <span class="leaf-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20.5 3.5C14 4 8.5 6.5 6 12.5c-1.5 3.5-.5 6 2 7 3 1.2 6-.3 7.5-4 .8-1.9 1.3-4 4-6 .6-.5.9-1.2.8-2-.1-.8-.8-1.5-1.6-1.5h-.2z" fill="#BDE3A7"/>
+              <path d="M9 17c2-2 5-4 9-5" stroke="#E7F5DC" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="topbar-text">AI4Agri</span>
+        </div>
+      </header>
+
+      <div class="loc-content">
+        <h2 class="location-title" data-i18n="choose_location">Choose your Location!!</h2>
+        <p id="location-name" class="location-name" data-i18n="fetching_location">Fetching your location…</p>
+
+        <div class="map-card">
+          <div id="map" class="map-view" aria-label="Interactive map"></div>
+          <img id="static-map" class="map-img" alt="Map preview of your location" />
+        </div>
+
+        <button id="btn-loc-next" class="fab-next" aria-label="Next">
+          <svg viewBox="0 0 40 40" width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="18" fill="#ffffff" stroke="#3E7422" stroke-width="3"/>
+            <path d="M16 12l8 8-8 8" fill="none" stroke="#3E7422" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Bottom decorative strip -->
+    <div class="bottom-graphic" aria-hidden="true"></div>
+
+    <!-- Language Selection Screen -->
+    <section id="screen-language" class="language-screen hidden" role="region" aria-label="Language selection">
+      <header class="topbar">
+        <button id="btn-back" class="icon-back" aria-label="Go back">
+          <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="11.5" fill="none" stroke="#111" stroke-width="2.5"/>
+            <path d="M15.5 9l-4.5 5 4.5 5" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="topbar-brand">
+          <span class="leaf-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20.5 3.5C14 4 8.5 6.5 6 12.5c-1.5 3.5-.5 6 2 7 3 1.2 6-.3 7.5-4 .8-1.9 1.3-4 4-6 .6-.5.9-1.2.8-2-.1-.8-.8-1.5-1.6-1.5h-.2z" fill="#BDE3A7"/>
+              <path d="M9 17c2-2 5-4 9-5" stroke="#E7F5DC" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="topbar-text">AI4Agri</span>
+        </div>
+      </header>
+
+      <div class="lang-content">
+        <h2 class="lang-title" data-i18n="choose_language">What's your Language?</h2>
+
+        <ul class="lang-list" role="listbox" aria-label="Languages">
+          <li><button class="lang-option" data-value="system"><span class="dot"></span><span class="label">System Language</span></button></li>
+          <li><button class="lang-option" data-value="kn"><span class="dot"></span><span class="label">Kannada</span></button></li>
+          <li><button class="lang-option" data-value="pa"><span class="dot"></span><span class="label">Punjabi</span></button></li>
+          <li><button class="lang-option selected" data-value="en"><span class="dot"></span><span class="label">English</span></button></li>
+          <li><button class="lang-option" data-value="te"><span class="dot"></span><span class="label">Telugu</span></button></li>
+          <li><button class="lang-option" data-value="ta"><span class="dot"></span><span class="label">Tamil</span></button></li>
+        </ul>
+
+        <button id="btn-lang-next" class="fab-next" aria-label="Next">
+          <svg viewBox="0 0 40 40" width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="18" fill="#ffffff" stroke="#3E7422" stroke-width="3"/>
+            <path d="M16 12l8 8-8 8" fill="none" stroke="#3E7422" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Auth Choice Screen -->
+    <section id="screen-auth" class="auth-screen hidden" role="region" aria-label="Authentication options">
+      <header class="topbar">
+        <button id="btn-auth-back" class="icon-back" aria-label="Go back">
+          <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="11.5" fill="none" stroke="#111" stroke-width="2.5"/>
+            <path d="M15.5 9l-4.5 5 4.5 5" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="topbar-brand">
+          <span class="leaf-inline" aria-hidden="true"></span>
+          <span class="topbar-text">AI4Agri</span>
+        </div>
+      </header>
+
+      <div class="auth-content">
+        <div class="auth-hero">
+          <img src="image1.png" alt="Hero" />
+        </div>
+        <div class="auth-actions">
+          <button id="btn-auth-email" class="btn-pill">Signup with Email or phone</button>
+          <button id="btn-auth-google" class="btn-pill btn-google"><span class="g-dot" aria-hidden="true"></span> Sign in with Google</button>
+          <button id="btn-auth-get-started" class="btn-outline">Get  Started</button>
+          <button id="btn-auth-guest" class="link-ghost">continue without signing in</button>
+          <p class="fineprint">By joining you accept the <a href="#" class="link">Privacy Policy</a>, and <a href="#" class="link">Terms of Use</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Signup Screen -->
+    <section id="screen-signup" class="auth-form-screen hidden" role="region" aria-label="Sign up">
+      <header class="topbar">
+        <button id="btn-signup-back" class="icon-back" aria-label="Go back">
+          <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="11.5" fill="none" stroke="#111" stroke-width="2.5"/>
+            <path d="M15.5 9l-4.5 5 4.5 5" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h2 class="topbar-title">Sign Up</h2>
+      </header>
+      <div class="form-content">
+        <div class="field"><input id="su-email" type="email" placeholder="Email Address" autocomplete="email" /></div>
+        <div class="field with-eye"><input id="su-pass" type="password" placeholder="Create password" autocomplete="new-password" /><button class="eye" data-target="su-pass" aria-label="Show/Hide password">👁️</button></div>
+        <div class="field with-eye"><input id="su-pass2" type="password" placeholder="Confirm password" autocomplete="new-password" /><button class="eye" data-target="su-pass2" aria-label="Show/Hide password">👁️</button></div>
+        <button id="btn-su-continue" class="btn-continue" disabled>continue</button>
+        <p class="fineprint">By joining you accept the <a href="#" class="link">Privacy Policy</a>, and <a href="#" class="link">Terms of Use</a></p>
+        <p class="swap">Have an account? <a href="#" id="link-to-login" class="link">Login</a></p>
+      </div>
+    </section>
+
+    <!-- Login Screen -->
+    <section id="screen-login" class="auth-form-screen hidden" role="region" aria-label="Login">
+      <header class="topbar">
+        <button id="btn-login-back" class="icon-back" aria-label="Go back">
+          <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="11.5" fill="none" stroke="#111" stroke-width="2.5"/>
+            <path d="M15.5 9l-4.5 5 4.5 5" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h2 class="topbar-title">Login</h2>
+      </header>
+      <div class="form-content">
+        <div class="field"><input id="li-email" type="email" placeholder="Email Address" autocomplete="email" /></div>
+        <div class="field with-eye"><input id="li-pass" type="password" placeholder="Enter password" autocomplete="current-password" /><button class="eye" data-target="li-pass" aria-label="Show/Hide password">👁️</button></div>
+        <button id="btn-li-continue" class="btn-continue" disabled>continue</button>
+        <div class="or-row"><span></span>OR<span></span></div>
+        <button id="btn-login-google" class="btn-pill btn-google"><span class="g-dot" aria-hidden="true"></span> Sign in with Google</button>
+        <p class="swap">Don't have an account? <a href="#" id="link-to-signup" class="link">Sign Up</a></p>
+      </div>
+    </section>
+
+    <!-- Dashboard Screen -->
+    <section id="screen-dashboard" class="dashboard-screen hidden" role="region" aria-label="Dashboard">
+      <header class="topbar dash">
+        <div class="topbar-brand">
+          <span class="leaf-inline" aria-hidden="true"></span>
+          <span class="topbar-text">AI4Agri</span>
+        </div>
+        <div class="dash-actions" aria-label="User and settings">
+          <button class="icon-btn" aria-label="Profile">👤</button>
+        </div>
+      </header>
+
+      <div class="dash-content">
+        <!-- Welcome card -->
+        <section class="card welcome">
+          <img class="avatar" src="avatar.png" alt="User avatar" onerror="this.style.display='none'" />
+          <div class="welcome-text">
+            <p class="hello">Welcome, <strong id="farmer-name">Gurpreet ji</strong>! 👋</p>
+            <p class="sub">Here’s your farm’s <span class="accent">overview for today</span></p>
+          </div>
+        </section>
+
+        <!-- Weather block -->
+        <h3 class="section-title">Real Time Weather</h3>
+        <section class="card weather">
+          <div class="w-icon" aria-hidden="true">🌡️</div>
+          <div class="w-meta">
+            <div class="label">Current</div>
+            <div class="temp">30°C</div>
+            <div class="cond">Sunny</div>
+          </div>
+        </section>
+
+        <!-- Advisories -->
+        <h3 class="section-title">Urgent Advisories</h3>
+        <section class="card advisory">
+          <span class="accent-bar"></span>
+          <div class="a-icon" aria-hidden="true">🔎</div>
+          <div class="a-content">
+            <h4 class="a-title">Pest Alert: <span class="crop">Aphids</span></h4>
+            <p class="a-text">High infestation for your <span class="bold">wheat crop</span><br/>Apply recommended pesticides immediately</p>
+            <a href="#" class="a-link">Learn more →</a>
+          </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <h3 class="section-title">Quick Actions</h3>
+        <section class="quick-grid">
+          <button class="quick">
+            <span class="q-icon" aria-hidden="true">🪲</span>
+            <span class="q-label">Pest/disease Detection</span>
+          </button>
+          <button class="quick">
+            <span class="q-icon" aria-hidden="true">💰</span>
+            <span class="q-label">Market Prices</span>
+          </button>
+          <button class="quick">
+            <span class="q-icon" aria-hidden="true">🌾</span>
+            <span class="q-label">Crop Advisory</span>
+          </button>
+          <button class="quick">
+            <span class="q-icon" aria-hidden="true">🧪</span>
+            <span class="q-label">Soil Health</span>
+          </button>
+        </section>
+      </div>
+
+      <!-- Assistant FAB -->
+      <button class="mic-fab" aria-label="AI assistant">🤖</button>
+
+      <!-- Bottom Tab Bar -->
+      <nav class="tabbar" aria-label="Bottom navigation">
+        <button class="tab active"><span class="t-icon">🏠</span><span class="t-label">Home</span></button>
+        <button class="tab"><span class="t-icon">📢</span><span class="t-label">Advisory</span></button>
+        <button class="tab"><span class="t-icon">🔎</span><span class="t-label">Detection</span></button>
+        <button class="tab"><span class="t-icon">📈</span><span class="t-label">Market</span></button>
+        <button class="tab"><span class="t-icon">⚙️</span><span class="t-label">Settings</span></button>
+      </nav>
+    </section>
+
+    <!-- Mock Google account picker modal -->
+    <div id="google-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Choose Google account">
+      <div class="modal-card">
+        <h3>Choose an account</h3>
+        <ul class="acct-list">
+          <li><button class="acct" data-email="farmer1@example.com">farmer1@example.com</button></li>
+          <li><button class="acct" data-email="farmer2@example.com">farmer2@example.com</button></li>
+          <li><button class="acct" data-email="farmer3@example.com">farmer3@example.com</button></li>
+        </ul>
+        <button id="google-cancel" class="btn-outline">Cancel</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Leaflet JS for interactive maps -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <script src="app.js"></script>
+</body>
+</html>
